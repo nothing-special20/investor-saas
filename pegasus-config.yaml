@@ -1,0 +1,26 @@
+default_context:
+  _pegasus_version: '2022.9'
+  author_name: Rquin
+  ci: github_actions
+  css_framework: bootstrap
+  css_theme: default
+  database: postgres
+  deploy_platform: none
+  description: A SaaS for Investors
+  domain_name: localhost:8000
+  email: rquin@billmoretech.com
+  enable_google_login: y
+  enable_twitter_login: n
+  front_end_framework: htmx
+  project_name: Investor SaaS
+  project_slug: investor_saas
+  stripe_payment_mode: checkout
+  subscription_billing_model: default
+  use_api_keys: y
+  use_docker: y
+  use_impersonation: y
+  use_sentry: y
+  use_subscriptions: y
+  use_teams: y
+  use_translations: y
+  use_wagtail: y

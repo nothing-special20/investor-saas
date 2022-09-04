@@ -1,0 +1,15 @@
+Django
+django-allauth
+psycopg2-binary
+djangorestframework
+djangorestframework-api-key
+drf-spectacular
+stripe
+dj-stripe
+django-anymail[mailgun]  # email services
+django-hijack
+celery-progress
+celery
+celery[redis]
+sentry-sdk
+wagtail
