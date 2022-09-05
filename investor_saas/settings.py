@@ -95,6 +95,7 @@ PROJECT_APPS = [
     'apps.web',
     'apps.teams.apps.TeamConfig',
     'apps.teams_example.apps.TeamsExampleConfig',
+    'apps.find_investors.apps.FindInvestorsConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PEGASUS_APPS + PROJECT_APPS + WAGTAIL_APPS
@@ -150,8 +151,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('DJANGO_DATABASE_NAME', 'investor_saas'),
         'USER': os.environ.get('DJANGO_DATABASE_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DJANGO_DATABASE_PASSWORD', '***'),
-        'HOST': os.environ.get('DJANGO_DATABASE_HOST', 'localhost'),
+        'PASSWORD': os.environ.get('DJANGO_DATABASE_PASSWORD', 'postgres'),
+        'HOST': os.environ.get('DJANGO_DATABASE_HOST', 'db'),
         'PORT': os.environ.get('DJANGO_DATABASE_PORT', '5432'),
     }
 }
@@ -323,8 +324,8 @@ SPECTACULAR_SETTINGS = {
 
 
 # Celery setup (using redis)
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 
 # Wagtail config
 

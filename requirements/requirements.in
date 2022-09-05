@@ -13,3 +13,4 @@ celery
 celery[redis]
 sentry-sdk
 wagtail
+twilio
