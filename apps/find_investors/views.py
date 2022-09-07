@@ -2,9 +2,15 @@ import os
 
 import django
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import JsonResponse
 
 from .functions import mock_data, twilio_sms
+
+import googlemaps
+import json
+
+# 
+google_maps_api_key = os.getenv('GOOGLE_MAPS_API')
 
 # Create your views here.
 
@@ -58,6 +64,43 @@ def send_message(request):
     
     else:
         return render(request, 'web/landing_page.html')
+
+def geocode(request):
+    # gmaps = googlemaps.Client(key=google_maps_api_key)
+    # result = json.dumps(gmaps.geocode(str('The Sundial, 2nd Avenue North, St. Petersburg, FL')))
+    # result2 = json.loads(result)
+    # latitude = result2[0]['geometry']['location']['lat']
+    # longitude = result2[0]['geometry']['location']['lng']
+    # context = {
+    #     'result':result,
+    #     'latitude':latitude,
+    #     'longitude':longitude,
+    #     'key': google_maps_api_key
+    # }
+
+    context = {'key': google_maps_api_key}
+
+    return render(request, 'google/geocode.html', context)
+    # return JsonResponse(context, safe=False)
+
+def map(request):
+    context = {'key': google_maps_api_key}
+    return render(request, 'google/map.html',context)
+
+def mydata(request):
+    gmaps = googlemaps.Client(key=google_maps_api_key)
+    result = json.dumps(gmaps.geocode(str('The Sundial, 2nd Avenue North, St. Petersburg, FL')))
+    result2 = json.loads(result)
+    latitude = result2[0]['geometry']['location']['lat']
+    longitude = result2[0]['geometry']['location']['lng']
+    context = {
+        'result':result,
+        'latitude':latitude,
+        'longitude':longitude,
+        'key': google_maps_api_key
+    }
+
+    return JsonResponse(context, safe=False)
 
 def set_message(request):
     if request.user.is_authenticated:

@@ -18,7 +18,9 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path('', views.find_investors),
+    path('', views.map, name='find_investors'),
     path('send_message', views.send_message, name="send_message"),
-    path('set_message', views.set_message, name="set_message")
+    path('set_message', views.set_message, name="set_message"),
+    path('mydata', views.mydata, name="mydata"),
+    path('map', views.map, name="map"),
 ]

@@ -95,6 +95,8 @@ drf-spectacular==0.22.1
     # via -r requirements/requirements.in
 et-xmlfile==1.1.0
     # via openpyxl
+googlemaps==4.6.0
+    # via -r requirements/requirements.in
 html5lib==1.1
     # via wagtail
 idna==3.3
@@ -151,6 +153,7 @@ requests==2.27.1
     # via
     #   django-allauth
     #   django-anymail
+    #   googlemaps
     #   requests-oauthlib
     #   stripe
     #   twilio

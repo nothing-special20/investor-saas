@@ -14,3 +14,4 @@ celery[redis]
 sentry-sdk
 wagtail
 twilio
+googlemaps
