@@ -26,19 +26,51 @@
             crossorigin="anonymous"></script>
   
     <script type="text/javascript">
-    $(document).on('submit','#filter-rei-data-form',function(e) {
-      console.log('roar')
-      e.preventDefault();
-      $.ajax({
-          type:'POST',
-          url:'{% url "mydata" %}',
-          data:
-          {
-              numBedrooms:$("#num-bedrooms").val(),
-              numBathrooms:$("#num-bathrooms").val(),
-              csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
-          },
+      $(document).on('submit','#filter-rei-data-form', async function(e) {
+        e.preventDefault();
+        var request = await $.ajax({
+            type:'POST',
+            dataType: 'json',
+            url:'{% url "mydata" %}',
+            data:
+            {
+                numBedrooms:$("#num-bedrooms").val(),
+                numBathrooms:$("#num-bathrooms").val(),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+            },
+          });
+          initMap(request)
+        });
+        
+    </script>
+    <script>
+      $(document).ready(function(){
+          $.ajax({
+              url: "{% url 'mydata'%}",
+              method: 'POST',
+              success: function (data) {
+                  console.log('enjoy the moment');
+                  initMap(data);
+              }
         });
       });
+  
+      function initMap(data) {
+          console.log('lol')
+         const map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 11,
+            {% comment %} center: {lat: 27.8338925, lng: -82.7176579} {% endcomment %}
+            center: {lat: 27.9621443, lng: -82.4584448}
+         });
+         console.log(map)
+         const markers = data?.map((i) => {
+              const marker = new google.maps.Marker({
+                  position: { lat: parseFloat(i.latitude), lng: parseFloat(i.longitude)},
+                  map: map,
+                  title: i.title
+              })
+          });
+  
+       }
     </script>
 {% endblock %}

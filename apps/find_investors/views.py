@@ -116,6 +116,16 @@ def mydata(request):
     num_bedrooms = request.POST.get('numBedrooms')
     num_bathrooms = request.POST.get('numBathrooms')
 
+    if num_bedrooms == None:
+        num_bedrooms = -1.0
+    else:
+        num_bedrooms = float(num_bedrooms)
+
+    if num_bathrooms == None:
+        num_bathrooms = -1.0
+    else:
+        num_bathrooms = float(num_bathrooms)
+
     result_list = list(ParcelInfo.objects
                 .values('ADDR_1',
                         'CITY',
@@ -125,20 +135,23 @@ def mydata(request):
                         'NUMBER_OF_BATHS',                        
                         ))
 
-    result_list = result_list[:1]
+    result_list = [x for x in result_list if float(x['NUMBER_OF_BEDS']) > num_bedrooms and float(x['NUMBER_OF_BATHS']) > num_bathrooms]
+    result_list = result_list[:4]
+
+    print(len(result_list))
+    print(result_list)
+    
     #'The Sundial, 2nd Avenue North, St. Petersburg, FL'
     addresses = [address_builder(x) for x in result_list]
     coords = [get_coordinates(x) for x in addresses]
 
-
-    print([num_bathrooms, num_bedrooms])
     context = { **coords[0], 'title': 'whatever' }
 
-    context = {
-        # **get_coordinates(str(result_list[0])),
-        **get_coordinates('The Sundial, 2nd Avenue North, St. Petersburg, FL'),
-        'title': '\n'.join(['The Sundial', 'Purchase Price: $1,000,000', 'Sale Price: $3,000,000', 'Owner: Yo Mama']),
-    }
+    # context = {
+    #     # **get_coordinates(str(result_list[0])),
+    #     **get_coordinates('The Sundial, 2nd Avenue North, St. Petersburg, FL'),
+    #     'title': '\n'.join(['The Sundial', 'Purchase Price: $1,000,000', 'Sale Price: $3,000,000', 'Owner: Yo Mama']),
+    # }
 
     context = []
 
