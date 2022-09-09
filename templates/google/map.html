@@ -16,14 +16,17 @@
     });
 
     function initMap(data) {
+        console.log(data)
        const map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 13,
+          zoom: 11,
           center: {lat: 27.8338925, lng: -82.7176579}
        });
+       console.log(map)
        const markers = data?.map((i) => {
             const marker = new google.maps.Marker({
                 position: { lat: parseFloat(i.latitude), lng: parseFloat(i.longitude)},
                 map: map,
+                title: i.title
             })
         });
 
@@ -33,7 +36,7 @@
 
 <div class="pageholder">
     <div class="titleholder"> 
-        <div class="title"><i class="fas fa-compass mr-2"></i> Google Maps #4: Markers on a map </div>
+        <div class="title"><i class="fas fa-compass mr-2"></i> Real Estate Investors Map </div>
         <a href="{% url 'find_investors'%}" class="title2 mr-4"><i class="fas fa-home mr-2"></i> Back to home </a>
     </div>
 

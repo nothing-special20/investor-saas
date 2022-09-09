@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 from .functions import mock_data, twilio_sms
+from .models import ParcelInfo
 
 import googlemaps
 import json
@@ -85,11 +86,12 @@ def geocode(request):
 
 def map(request):
     context = {'key': google_maps_api_key}
-    return render(request, 'google/map.html',context)
+    # return render(request, 'google/map.html',context)
+    return render(request, 'find_investors/index.html',context)
 
-def mydata(request):
+def get_coordinates(address):
     gmaps = googlemaps.Client(key=google_maps_api_key)
-    result = json.dumps(gmaps.geocode(str('The Sundial, 2nd Avenue North, St. Petersburg, FL')))
+    result = json.dumps(gmaps.geocode(address))
     result2 = json.loads(result)
     latitude = result2[0]['geometry']['location']['lat']
     longitude = result2[0]['geometry']['location']['lng']
@@ -97,8 +99,55 @@ def mydata(request):
         'result':result,
         'latitude':latitude,
         'longitude':longitude,
-        'key': google_maps_api_key
     }
+
+    return context
+
+
+def address_builder(record):
+    address = record['ADDR_1']
+    city = record['CITY']
+    state = record['STATE']
+    zip_code = record['ZIP']
+    return ' '.join([address, city, state, zip_code])
+
+def mydata(request):
+    result_list = list(ParcelInfo.objects
+                .values('ADDR_1',
+                        'CITY',
+                        'STATE',
+                        'ZIP',
+                        'NUMBER_OF_BEDS',
+                        'NUMBER_OF_BATHS',                        
+                        ))
+
+    result_list = result_list[:3]
+    #'The Sundial, 2nd Avenue North, St. Petersburg, FL'
+    addresses = [address_builder(x) for x in result_list]
+    coords = [get_coordinates(x) for x in addresses]
+
+
+    print(coords[0])
+    context = { **coords[0], 'title': 'whatever' }
+
+    context = {
+        # **get_coordinates(str(result_list[0])),
+        **get_coordinates('The Sundial, 2nd Avenue North, St. Petersburg, FL'),
+        'title': '\n'.join(['The Sundial', 'Purchase Price: $1,000,000', 'Sale Price: $3,000,000', 'Owner: Yo Mama']),
+    }
+
+    context = []
+
+    for x in coords:
+        context.append(x)
+
+    # context = [{'latitude': 27.7737528, 
+    #             'longitude': -82.6344667, 
+    #             'title': 'The Sundial\nPurchase Price: $1,000,000\nSale Price: $3,000,000\nOwner: Yo Mama'
+    #             }]
+
+    print(context)
+    
 
     return JsonResponse(context, safe=False)
 
