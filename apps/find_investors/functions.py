@@ -1,3 +1,4 @@
+from modulefinder import replacePackageMap
 import re
 import json
 import sys
@@ -8,15 +9,60 @@ from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
 from django.core.files.uploadedfile import TemporaryUploadedFile
 
-"""
-    Function that loads files from a folder into elasticsearch
-    Source: https://docs.djangoproject.com/en/3.2/topics/http/file-uploads/
-"""
+from .models import ParcelCoordinates
+
+google_maps_api_key = os.getenv('GOOGLE_MAPS_API')
 
 #Twilio
-
-
 from twilio.rest import Client
+import googlemaps
+
+def address_builder(record):
+    address = record['ADDR_1']
+    city = record['CITY']
+    state = record['STATE']
+    zip_code = record['ZIP']
+    return ' '.join([address, city, state, zip_code])
+
+def get_coordinates(address):
+    gmaps = googlemaps.Client(key=google_maps_api_key)
+    result = json.dumps(gmaps.geocode(address))
+    result2 = json.loads(result)
+    latitude = result2[0]['geometry']['location']['lat']
+    longitude = result2[0]['geometry']['location']['lng']
+    context = {
+        'result':result,
+        'latitude':latitude,
+        'longitude':longitude,
+        'title': address
+    }
+
+    return context
+
+def coordinates(record):
+    try:
+        obj = list(ParcelCoordinates.objects.filter(PIN=record['PIN']).values())
+        print(obj)
+        context = {
+            'latitude': obj[0]['LATITUDE'],
+            'longitude':obj[0]['LONGITUDE'],
+            'title': address_builder(record)
+        }
+        print('fetched coords from database')
+        return context
+
+    except:
+        address = address_builder(record)
+        context = get_coordinates(address)
+        print('fetched coords from google')
+
+        doc = ParcelCoordinates(PIN=record['PIN'],
+                                FOLIO=record['FOLIO'], 
+                                LATITUDE=context['latitude'], 
+                                LONGITUDE=context['longitude'],
+                                COUNTY=record['COUNTY'])
+        doc.save()
+        return context
 
 def twilio_sms(to_num, msg):
     # Your Account SID from twilio.com/console

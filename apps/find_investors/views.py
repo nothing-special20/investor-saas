@@ -4,13 +4,11 @@ import django
 from django.shortcuts import render
 from django.http import JsonResponse
 
-from .functions import mock_data, twilio_sms
+from .functions import mock_data, twilio_sms, coordinates
 from .models import ParcelInfo
 
-import googlemaps
 import json
 
-# 
 google_maps_api_key = os.getenv('GOOGLE_MAPS_API')
 
 # Create your views here.
@@ -89,28 +87,6 @@ def map(request):
     # return render(request, 'google/map.html',context)
     return render(request, 'find_investors/index.html',context)
 
-def get_coordinates(address):
-    gmaps = googlemaps.Client(key=google_maps_api_key)
-    result = json.dumps(gmaps.geocode(address))
-    result2 = json.loads(result)
-    latitude = result2[0]['geometry']['location']['lat']
-    longitude = result2[0]['geometry']['location']['lng']
-    context = {
-        'result':result,
-        'latitude':latitude,
-        'longitude':longitude,
-        'title': address
-    }
-
-    return context
-
-
-def address_builder(record):
-    address = record['ADDR_1']
-    city = record['CITY']
-    state = record['STATE']
-    zip_code = record['ZIP']
-    return ' '.join([address, city, state, zip_code])
 
 def mydata(request):
     num_bedrooms = request.POST.get('numBedrooms')
@@ -127,7 +103,10 @@ def mydata(request):
         num_bathrooms = float(num_bathrooms)
 
     result_list = list(ParcelInfo.objects
-                .values('ADDR_1',
+                .values('PIN',
+                        'FOLIO',
+                        'COUNTY',
+                        'ADDR_1',
                         'CITY',
                         'STATE',
                         'ZIP',
@@ -136,16 +115,12 @@ def mydata(request):
                         ))
 
     result_list = [x for x in result_list if float(x['NUMBER_OF_BEDS']) > num_bedrooms and float(x['NUMBER_OF_BATHS']) > num_bathrooms]
-    result_list = result_list[:4]
-
-    print(len(result_list))
-    print(result_list)
-    
+    result_list = result_list[:3]
+  
     #'The Sundial, 2nd Avenue North, St. Petersburg, FL'
-    addresses = [address_builder(x) for x in result_list]
-    coords = [get_coordinates(x) for x in addresses]
+    coords = [coordinates(x) for x in result_list]
 
-    context = { **coords[0], 'title': 'whatever' }
+    # context = { **coords[0], 'title': 'whatever' }
 
     # context = {
     #     # **get_coordinates(str(result_list[0])),
