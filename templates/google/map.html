@@ -3,7 +3,6 @@
 {% load static %}
 
 <script>
-
     $(document).ready(function(){
         $.ajax({
             url: "{% url 'mydata'%}",
@@ -19,7 +18,8 @@
         console.log(data)
        const map = new google.maps.Map(document.getElementById('map'), {
           zoom: 11,
-          center: {lat: 27.8338925, lng: -82.7176579}
+          {% comment %} center: {lat: 27.8338925, lng: -82.7176579} {% endcomment %}
+          center: {lat: 27.9621443, lng: -82.4584448}
        });
        console.log(map)
        const markers = data?.map((i) => {

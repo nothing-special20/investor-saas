@@ -99,6 +99,7 @@ def get_coordinates(address):
         'result':result,
         'latitude':latitude,
         'longitude':longitude,
+        'title': address
     }
 
     return context
@@ -112,6 +113,9 @@ def address_builder(record):
     return ' '.join([address, city, state, zip_code])
 
 def mydata(request):
+    num_bedrooms = request.POST.get('numBedrooms')
+    num_bathrooms = request.POST.get('numBathrooms')
+
     result_list = list(ParcelInfo.objects
                 .values('ADDR_1',
                         'CITY',
@@ -121,13 +125,13 @@ def mydata(request):
                         'NUMBER_OF_BATHS',                        
                         ))
 
-    result_list = result_list[:3]
+    result_list = result_list[:1]
     #'The Sundial, 2nd Avenue North, St. Petersburg, FL'
     addresses = [address_builder(x) for x in result_list]
     coords = [get_coordinates(x) for x in addresses]
 
 
-    print(coords[0])
+    print([num_bathrooms, num_bedrooms])
     context = { **coords[0], 'title': 'whatever' }
 
     context = {
@@ -145,9 +149,6 @@ def mydata(request):
     #             'longitude': -82.6344667, 
     #             'title': 'The Sundial\nPurchase Price: $1,000,000\nSale Price: $3,000,000\nOwner: Yo Mama'
     #             }]
-
-    print(context)
-    
 
     return JsonResponse(context, safe=False)
 
