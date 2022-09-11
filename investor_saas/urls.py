@@ -78,4 +78,5 @@ urlpatterns = [
     path('documents/', include(wagtaildocs_urls)),
     path('content/', include(wagtail_urls)),
     path('find_investors', include('apps.find_investors.urls')),
+    path('my_properties/', include('apps.my_properties.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

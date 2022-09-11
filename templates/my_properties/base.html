@@ -1,0 +1,48 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>My Properties</title>
+
+</head>
+<body>
+    <h3 class="container d-flex justify-content-center my-3">List Property</h3>   
+    <div class="container justify-content-center my-3" style="width: 450px;">
+        <form method="post" enctype="multipart/form-data" action="{% url 'add_property_upload' %}" class="mt-6">
+            {% csrf_token %}
+
+            <h4 class="justify-content-center">Title</h4>
+            <input type="text" class="form-control bg-light border-0 small"
+                    placeholder="Title" aria-label="Search"
+                    aria-describedby="basic-addon2"
+                    name="title" required
+            >
+            <br>
+
+            <h4 class="justify-content-center">Property Details</h4>
+            <textarea type="text" class="form-control bg-light border-0 small"
+                    placeholder="Property Details" aria-label="Search"
+                    aria-describedby="basic-addon2" style="height: 300px;"
+                    name="property-details" required>
+            </textarea>
+            <br>
+            <h4 class="justify-content-center">PIN</h4>
+            <input type="text" class="form-control bg-light border-0 small"
+                    placeholder="PIN" aria-label="Search"
+                    aria-describedby="basic-addon2"
+                    name="pin" required
+            >
+            <br>
+            <input type="file" class="form-control bg-light border-0 small" name="property-photos" accept=".png, .jpg, .tiff" required multiple>
+            <br><br>
+            <input type="submit" value="Submit" class="btn btn-primary w-100">
+          </form>
+      </div>
+    </div>
+ 
+</body>
+</html>

@@ -1,0 +1,26 @@
+{% extends "web/base.html" %}
+{% include "google/map.html" %}
+{% load static %}
+{% block body %}
+    <h2 class="my-4">My Properties</h2>
+    <h3>Title</h3>
+    <div>{{my_properties.TITLE}}</div>
+    <h3>Property Details</h3>
+    <div>{{my_properties.PROPERTY_DETAILS}}</div>
+    <h3>PIN</h3>
+    <div>{{my_properties.PIN}}</div>
+    <div class="row">
+    {% for photo in my_properties.PROPERTY_PHOTOS %}
+    <div class="col-lg-4 col-md-6 col-sm-12 pb-4">
+        <div class="card h-100 p-4">
+        <img src="/media/{{ photo }}" class="card-img-top">
+        </div>
+    </div>
+    {% empty %}
+    <p>No properties added.</p>
+    {% endfor %}
+    </div>
+    <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1c3eNMjYy7m6C0nvh3cnwpe-mfUzubG4&ehbc=2E312F" width="640" height="480"></iframe>
+
+    
+{% endblock %}

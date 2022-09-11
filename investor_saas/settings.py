@@ -96,6 +96,7 @@ PROJECT_APPS = [
     'apps.teams.apps.TeamConfig',
     'apps.teams_example.apps.TeamsExampleConfig',
     'apps.find_investors.apps.FindInvestorsConfig',
+    'apps.my_properties.apps.MyPropertiesConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PEGASUS_APPS + PROJECT_APPS + WAGTAIL_APPS
