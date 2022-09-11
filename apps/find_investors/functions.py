@@ -9,7 +9,9 @@ from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
 from django.core.files.uploadedfile import TemporaryUploadedFile
 
-from .models import ParcelCoordinates
+from .models import ParcelCoordinates, InvestorHistory
+
+from datetime import datetime
 
 google_maps_api_key = os.getenv('GOOGLE_MAPS_API')
 
@@ -39,17 +41,21 @@ def get_coordinates(address):
 
     return context
 
+def investor_history(pin):
+    obj = list(InvestorHistory.objects.filter(PIN=pin).values())
+
+    return obj
+
 def coordinates(record):
     try:
         obj = list(ParcelCoordinates.objects.filter(PIN=record['PIN']).values())
-        print(obj)
+
         context = {
             'latitude': obj[0]['LATITUDE'],
             'longitude':obj[0]['LONGITUDE'],
             'title': address_builder(record)
         }
         print('fetched coords from database')
-        return context
 
     except:
         address = address_builder(record)
@@ -62,7 +68,27 @@ def coordinates(record):
                                 LONGITUDE=context['longitude'],
                                 COUNTY=record['COUNTY'])
         doc.save()
-        return context
+
+    try:
+        ih = investor_history(record['PIN'])[0]
+
+        title = '\n'.join([
+                    'Grantor: ' + ih['GRANTOR'], 
+                    'Grantee: ' + ih['GRANTEE'],
+                    'Purchase Date: ' + ih['PURCHASE_DATE'].strftime('%m-%d-%Y'),
+                    'Sale Date: ' + ih['SALE_DATE'].strftime('%m-%d-%Y'),
+                    'Purchase Amount: ' + "${:0,f}".format(ih['PURCHASE_AMOUNT']),
+                    'Sale Amount: ' + "${:0,f}".format(ih['SALE_AMOUNT']), 
+                    'Profit: ' + "${:0,f}".format(ih['PROFIT'])
+                    ])
+
+        # title = '\n'.join([ih['GRANTOR'], ih['GRANTEE'], ih['SALE_DATE'], ih['PURCHASE_AMOUNT'], ih['SALE_AMOUNT'], ih['PROFIT']])
+
+        context['title'] = title
+    except:
+        context = None
+
+    return context
 
 def twilio_sms(to_num, msg):
     # Your Account SID from twilio.com/console

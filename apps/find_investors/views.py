@@ -103,6 +103,11 @@ def mydata(request):
         num_bathrooms = float(num_bathrooms)
 
     result_list = list(ParcelInfo.objects
+                .filter(OWNER__contains='LLC')
+                .exclude(ADDR_1__isnull=True)
+                .exclude(CITY__isnull=True)
+                .exclude(STATE__isnull=True)
+                .exclude(ZIP__isnull=True)
                 .values('PIN',
                         'FOLIO',
                         'COUNTY',
@@ -111,14 +116,19 @@ def mydata(request):
                         'STATE',
                         'ZIP',
                         'NUMBER_OF_BEDS',
-                        'NUMBER_OF_BATHS',                        
+                        'NUMBER_OF_BATHS',
+                        'OWNER'                        
                         ))
 
     result_list = [x for x in result_list if float(x['NUMBER_OF_BEDS']) > num_bedrooms and float(x['NUMBER_OF_BATHS']) > num_bathrooms]
-    result_list = result_list[:3]
+    result_list = result_list[:600]
+
+    for x in result_list:
+        print(x)
   
     #'The Sundial, 2nd Avenue North, St. Petersburg, FL'
     coords = [coordinates(x) for x in result_list]
+    coords = [x for x in coords if x != None]
 
     # context = { **coords[0], 'title': 'whatever' }
 

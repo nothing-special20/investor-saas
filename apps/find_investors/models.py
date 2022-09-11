@@ -34,3 +34,13 @@ class ParcelCoordinates(models.Model):
     LATITUDE = models.DecimalField(max_digits=19, decimal_places=16)
     LONGITUDE = models.DecimalField(max_digits=19, decimal_places=16)
     COUNTY = models.TextField() 
+
+class InvestorHistory(models.Model):
+    PIN = models.TextField()
+    PURCHASE_DATE = models.DateField(null=True)
+    SALE_DATE = models.DateField(null=True)
+    SALE_AMOUNT = models.DecimalField(max_digits=19, decimal_places=2, null=True)
+    PURCHASE_AMOUNT = models.DecimalField(max_digits=19, decimal_places=2, null=True)
+    GRANTOR = models.TextField(null=True)
+    GRANTEE = models.TextField(null=True)
+    PROFIT = models.DecimalField(max_digits=19, decimal_places=2, null=True)

@@ -88,7 +88,7 @@ if __name__ == "__main__":
 
     if sys.argv[1]=='upload_data_to_db':
         engine = engine_fn()
-        parcel_sales_data = pd.read_csv('allsales.csv', sep='\t', dtype='str', nrows=10000)
+        parcel_sales_data = pd.read_csv('allsales.csv', sep='\t', dtype='str', nrows=50000)
         parcel_sales_data.rename(columns={
             "S_AMT": "SALE_AMOUNT",
              "S_DATE": "SALE_DATE"
@@ -100,7 +100,12 @@ if __name__ == "__main__":
         
         parcel_sales_data.to_sql('find_investors_sales', engine, index=False, if_exists='replace')
 
-        parcel_general_data = pd.read_csv('parcel_data.csv', sep='\t', dtype='str', nrows=10000)
+        parcel_general_data = pd.read_csv('parcel_data.csv', sep='\t', dtype='str', nrows=50000)
+
+        del parcel_general_data["ADDR_1"]
+        del parcel_general_data["CITY"]
+        del parcel_general_data["ZIP"]
+
         parcel_general_data.rename(columns={
             "tBEDS": "NUMBER_OF_BEDS",  
             "tBATHS": "NUMBER_OF_BATHS",
@@ -109,7 +114,17 @@ if __name__ == "__main__":
              },
              inplace=True)
 
+        #rename site as address, ciry, state, zip, etc
+        parcel_general_data.rename(columns={
+            "SITE_ADDR": "ADDR_1",
+            "SITE_CITY": "CITY",
+            "SITE_ZIP": "ZIP",
+             },
+             inplace=True)
+
         
+
+        print(parcel_general_data.columns)
 
         parcel_general_data['SQUARE_FEET'] = None
         parcel_general_data['YEAR_BUILT'] = None
